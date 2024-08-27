@@ -5,6 +5,7 @@ import { useToast } from '@/composables/useToast';
 import { ref } from 'vue';
 const modal = useModal<boolean>()
 const toast = useToast()
+const emit = defineEmits(['applicationSubmitted']);
 
 const formData = ref({
   applicantName: '',
@@ -27,7 +28,11 @@ const formData = ref({
 
 const submitApplication = async () => {
   const response = await api.applications.post(formData.value)
-  if (response.success) toast.success(`Application Saved Successfully. ${response.loanAmount ? 'Loan Amount : ' + response.loanAmount : ''}`)
+  if (response.success){
+    emit('applicationSubmitted');
+    toast.success(`Application Saved Successfully. ${response.loanAmount ? 'Loan Amount : ' + response.loanAmount : ''}`)
+
+  }
   else {
     toast.error('Error occurred while saving application')
     formData.value.applicantName = '';
